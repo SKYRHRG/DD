@@ -27,4 +27,4 @@ function verifyCsrf(req, res, next) {
 	return next();
 }
 
-module.exports = { router, verifyCsrf };
+module.exports = { router, verifyCsrf, hmacToken };

@@ -18,8 +18,22 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || `http://localhost:${PORT}`;
 
-// Security headers
-app.use(helmet());
+// Security headers (allow inline scripts/styles for our simple static page)
+app.use(helmet({
+	contentSecurityPolicy: {
+		useDefaults: true,
+		directives: {
+			defaultSrc: ["'self'"],
+			scriptSrc: ["'self'", "'unsafe-inline'"],
+			styleSrc: ["'self'", "https:", "'unsafe-inline'"],
+			fontSrc: ["'self'", "https:", "data:"],
+			imgSrc: ["'self'", "data:"],
+			objectSrc: ["'none'"],
+			upgradeInsecureRequests: null,
+		},
+	},
+	hsts: process.env.NODE_ENV === 'production' ? undefined : false,
+}));
 
 // CORS
 app.use(cors({
