@@ -1,14 +1,21 @@
 {
   "name": "skyrhrg-proxy-installer",
   "version": "1.0.0",
-  "description": "SKYRHRG Proxy Installer - SSH-based Squid proxy provisioning with UI and SQLite",
+  "description": "SKYRHRG Proxy Installer - SSH-based Squid proxy provisioning with UI and MySQL",
   "main": "src/server.js",
   "type": "commonjs",
   "scripts": {
     "dev": "node src/server.js",
     "start": "NODE_ENV=production node src/server.js"
   },
-  "keywords": ["squid", "proxy", "installer", "ssh", "express"],
+  "keywords": [
+    "squid",
+    "proxy",
+    "installer",
+    "ssh",
+    "express",
+    "mysql"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -19,8 +26,8 @@
     "express-rate-limit": "^8.0.1",
     "helmet": "^8.1.0",
     "multer": "^2.0.2",
+    "mysql2": "^3.14.3",
     "nanoid": "^5.1.5",
-    "sqlite3": "^5.1.7",
     "ssh2": "^1.16.0"
   }
 }

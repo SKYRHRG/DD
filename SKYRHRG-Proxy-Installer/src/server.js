@@ -20,12 +20,13 @@ const ALLOWED_ORIGIN_ENV = process.env.ALLOWED_ORIGIN || `http://localhost:${POR
 const ALLOWED_ORIGINS = ALLOWED_ORIGIN_ENV.split(',').map(s => s.trim()).filter(Boolean);
 
 // Security headers (allow inline scripts/styles for our simple static page)
+app.set('trust proxy', 1);
 app.use(helmet({
 	contentSecurityPolicy: {
 		useDefaults: true,
 		directives: {
 			defaultSrc: ["'self'"],
-			scriptSrc: ["'self'", "'unsafe-inline'"],
+			scriptSrc: ["'self'", "'unsafe-inline'", "https:"],
 			styleSrc: ["'self'", "https:", "'unsafe-inline'"],
 			fontSrc: ["'self'", "https:", "data:"],
 			imgSrc: ["'self'", "data:"],
@@ -35,6 +36,17 @@ app.use(helmet({
 	},
 	hsts: process.env.NODE_ENV === 'production' ? undefined : false,
 }));
+
+// Redirect HTTP to HTTPS in production behind a proxy
+if (process.env.NODE_ENV === 'production') {
+	app.use((req, res, next) => {
+		const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
+		if (!isHttps) {
+			return res.redirect(301, 'https://' + req.headers.host + req.originalUrl);
+		}
+		next();
+	});
+}
 
 // CORS (allow comma-separated origins)
 app.use(cors({
