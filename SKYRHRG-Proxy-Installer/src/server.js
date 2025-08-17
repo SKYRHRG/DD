@@ -16,7 +16,8 @@ const metaRoutes = require('./routes/meta');
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || `http://localhost:${PORT}`;
+const ALLOWED_ORIGIN_ENV = process.env.ALLOWED_ORIGIN || `http://localhost:${PORT}`;
+const ALLOWED_ORIGINS = ALLOWED_ORIGIN_ENV.split(',').map(s => s.trim()).filter(Boolean);
 
 // Security headers (allow inline scripts/styles for our simple static page)
 app.use(helmet({
@@ -35,9 +36,13 @@ app.use(helmet({
 	hsts: process.env.NODE_ENV === 'production' ? undefined : false,
 }));
 
-// CORS
+// CORS (allow comma-separated origins)
 app.use(cors({
-	origin: ALLOWED_ORIGIN,
+	origin: function (origin, callback) {
+		if (!origin) return callback(null, true);
+		if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+		return callback(new Error('Not allowed by CORS: ' + origin));
+	},
 	credentials: true,
 }));
 
