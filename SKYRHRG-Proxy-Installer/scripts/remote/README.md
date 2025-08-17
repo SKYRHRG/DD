@@ -1,0 +1,1 @@
+This folder is intentionally left for documenting remote scripts. The actual Squid installation script is generated on-the-fly in `src/services/ssh.js` using `buildSquidInstallScript()` to match the requested port and credentials.
